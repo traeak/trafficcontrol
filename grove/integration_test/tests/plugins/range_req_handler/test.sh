@@ -31,9 +31,7 @@ do
     test="${CMP_TOOL}  --chdrs \"Host:$host Range:bytes=${r}\" --ohdrs \"Range:bytes=${r}\" --path \"10Mb.txt\" --ignorehdrs \"Server,Date\""
     testno=$(($testno+1))
     echo -n "Test $testno ($test): "
-
-    ${CMP_TOOL}  --chdrs "Host:$host Range:bytes=${r}" --ohdrs "Range:bytes=${r}" --path "10Mb.txt" --ignorehdrs "Server,Date"
-
+		eval ${test}
     result=$(($result+$?))
   done
 done
@@ -46,9 +44,7 @@ do
     test="${CMP_TOOL}  --chdrs \"Host:$host Range:bytes=${r}\" --ohdrs \"Range:bytes=${r}\" --path \"10Mb.txt\" --ignorehdrs \"Server,Date\" --ignorempb"
     testno=$(($testno+1))
     echo -n "Test $testno ($test): "
-
-    ${CMP_TOOL}  --chdrs "Host:$host Range:bytes=${r}" --ohdrs "Range:bytes=${r}" --path "10Mb.txt" --ignorehdrs "Server,Date" --ignorempb
-
+		eval ${test}
     result=$(($result+$?))
   done
 done
