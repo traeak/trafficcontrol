@@ -39,7 +39,7 @@ func ValidateOfflineStates(tmURI string, toClient *to.Session) error {
 
 // ValidateOfflineStatesWithCDN validates per ValidateOfflineStates, but saves an additional query if the Traffic Monitor's CDN is known.
 func ValidateOfflineStatesWithCDN(tmURI string, tmCDN string, toClient *to.Session) error {
-	crConfigBytes, err := toClient.CRConfigRaw(tmCDN)
+	crConfigBytes, _, err := toClient.GetCRConfig(tmCDN)
 	if err != nil {
 		return fmt.Errorf("getting CRConfig: %v", err)
 	}

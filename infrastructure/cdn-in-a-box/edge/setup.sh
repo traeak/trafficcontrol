@@ -40,14 +40,11 @@ sed -ie "s;MY_IP;$myIP;g" /server.json
 
 source /to-access.sh
 
-while ! to-ping; do
+while ! to-ping 2>/dev/null; do
 	echo "waiting for Traffic Ops"
 	sleep 3
 done
 
-# Now network things. First need to authenticate
-curl -ksc cookie.jar -d "{\"u\":\"$TO_ADMIN_USER\",\"p\":\"$TO_ADMIN_PASSWORD\"}" https://$TO_HOST:$TO_PORT/api/1.3/user/login
-echo
 
 # Gets our CDN ID
 CDN=$(to-get api/1.3/cdns | jq '.response|.[]|select(.name=="CDN-in-a-Box")|.id')

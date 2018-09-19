@@ -29,7 +29,6 @@ import (
 
 	"github.com/apache/trafficcontrol/lib/go-log"
 	"github.com/apache/trafficcontrol/lib/go-tc"
-	"github.com/apache/trafficcontrol/lib/go-tc/v13"
 	"github.com/apache/trafficcontrol/traffic_ops/client"
 )
 
@@ -45,7 +44,7 @@ type ITrafficOpsSession interface {
 	Profiles() ([]tc.Profile, error)
 	Parameters(profileName string) ([]tc.Parameter, error)
 	DeliveryServices() ([]tc.DeliveryService, error)
-	CacheGroups() ([]v13.CacheGroup, error)
+	CacheGroups() ([]tc.CacheGroupNullable, error)
 	CRConfigHistory() []CRConfigStat
 }
 
@@ -267,7 +266,8 @@ func (s TrafficOpsSessionThreadsafe) trafficMonitorConfigMapRaw(cdn string) (*tc
 	if ss == nil {
 		return nil, ErrNilSession
 	}
-	return ss.TrafficMonitorConfigMap(cdn)
+	configMap, _, error := ss.GetTrafficMonitorConfigMap(cdn)
+	return configMap, error
 }
 
 // TrafficMonitorConfigMap returns the Traffic Monitor config map from the Traffic Ops. This is safe for multiple goroutines.
@@ -423,7 +423,8 @@ func (s TrafficOpsSessionThreadsafe) Servers() ([]tc.Server, error) {
 	if ss == nil {
 		return nil, ErrNilSession
 	}
-	return ss.Servers()
+	servers, _, error := ss.GetServers()
+	return servers, error
 }
 
 func (s TrafficOpsSessionThreadsafe) Profiles() ([]tc.Profile, error) {
@@ -431,7 +432,8 @@ func (s TrafficOpsSessionThreadsafe) Profiles() ([]tc.Profile, error) {
 	if ss == nil {
 		return nil, ErrNilSession
 	}
-	return ss.Profiles()
+	profiles, _, error := ss.GetProfiles()
+	return profiles, error
 }
 
 func (s TrafficOpsSessionThreadsafe) Parameters(profileName string) ([]tc.Parameter, error) {
@@ -439,7 +441,8 @@ func (s TrafficOpsSessionThreadsafe) Parameters(profileName string) ([]tc.Parame
 	if ss == nil {
 		return nil, ErrNilSession
 	}
-	return ss.Parameters(profileName)
+	parameters, _, error := ss.GetParametersByProfileName(profileName)
+	return parameters, error
 }
 
 func (s TrafficOpsSessionThreadsafe) DeliveryServices() ([]tc.DeliveryService, error) {
@@ -447,13 +450,15 @@ func (s TrafficOpsSessionThreadsafe) DeliveryServices() ([]tc.DeliveryService, e
 	if ss == nil {
 		return nil, ErrNilSession
 	}
-	return ss.DeliveryServices()
+	deliveryServices, _, error := ss.GetDeliveryServices()
+	return deliveryServices, error
 }
 
-func (s TrafficOpsSessionThreadsafe) CacheGroups() ([]v13.CacheGroup, error) {
+func (s TrafficOpsSessionThreadsafe) CacheGroups() ([]tc.CacheGroupNullable, error) {
 	ss := s.get()
 	if ss == nil {
 		return nil, ErrNilSession
 	}
-	return ss.CacheGroups()
+	cacheGroups, _, error := ss.GetCacheGroupsNullable()
+	return cacheGroups, error
 }

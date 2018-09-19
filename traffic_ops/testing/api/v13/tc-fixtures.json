@@ -660,7 +660,7 @@
             "domainName": "ga.atlanta.kabletown.net",
             "guid": null,
             "hostName": "atlanta-edge-01",
-            "httpsPort": null,
+            "httpsPort": 443,
             "iloIpAddress": "",
             "iloIpGateway": "",
             "iloIpNetmask": "",
@@ -683,7 +683,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 80,
-            "typeName": "EDGE",
+            "type": "EDGE",
             "updPending": true,
             "xmppId": "atlanta-edge-01\\\\@ocdn.kabletown.net",
             "xmppPasswd": "X"
@@ -692,7 +692,7 @@
             "domainName": "kabletown.net",
             "guid": null,
             "hostName": "influxdb02",
-            "httpsPort": null,
+            "httpsPort": 443,
             "iloIpAddress": "",
             "iloIpGateway": "",
             "iloIpNetmask": "",
@@ -715,7 +715,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 8086,
-            "typeName": "EDGE",
+            "type": "EDGE",
             "updPending": true,
             "xmppId": "",
             "xmppPasswd": ""
@@ -724,7 +724,7 @@
             "domainName": "ga.atlanta.kabletown.net",
             "guid": null,
             "hostName": "atlanta-router-01",
-            "httpsPort": null,
+            "httpsPort": 443,
             "iloIpAddress": "",
             "iloIpGateway": "",
             "iloIpNetmask": "",
@@ -747,7 +747,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 80,
-            "typeName": "EDGE",
+            "type": "EDGE",
             "updPending": true,
             "xmppId": "atlanta-router-01\\\\@ocdn.kabletown.net",
             "xmppPasswd": "X"
@@ -756,7 +756,7 @@
             "domainName": "ga.atlanta.kabletown.net",
             "guid": null,
             "hostName": "atlanta-edge-03",
-            "httpsPort": null,
+            "httpsPort": 443,
             "iloIpAddress": "",
             "iloIpGateway": "",
             "iloIpNetmask": "",
@@ -779,7 +779,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 80,
-            "typeName": "EDGE",
+            "type": "EDGE",
             "updPending": true,
             "xmppId": "atlanta-edge-03\\\\@ocdn.kabletown.net",
             "xmppPasswd": "X"
@@ -788,7 +788,7 @@
             "domainName": "ga.atlanta.kabletown.net",
             "guid": null,
             "hostName": "atlanta-edge-14",
-            "httpsPort": null,
+            "httpsPort": 443,
             "iloIpAddress": "",
             "iloIpGateway": "",
             "iloIpNetmask": "",
@@ -811,7 +811,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 80,
-            "typeName": "EDGE",
+            "type": "EDGE",
             "updPending": true,
             "xmppId": "atlanta-edge-14\\\\@ocdn.kabletown.net",
             "xmppPasswd": "X"
@@ -820,7 +820,7 @@
             "domainName": "ga.atlanta.kabletown.net",
             "guid": null,
             "hostName": "atlanta-edge-15",
-            "httpsPort": null,
+            "httpsPort": 443,
             "iloIpAddress": "",
             "iloIpGateway": "",
             "iloIpNetmask": "",
@@ -843,7 +843,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 80,
-            "typeName": "EDGE",
+            "type": "EDGE",
             "updPending": true,
             "xmppId": "atlanta-edge-15\\\\@ocdn.kabletown.net",
             "xmppPasswd": "X"
@@ -852,7 +852,7 @@
             "domainName": "ga.atlanta.kabletown.net",
             "guid": null,
             "hostName": "atlanta-mid-16",
-            "httpsPort": null,
+            "httpsPort": 443,
             "iloIpAddress": "",
             "iloIpGateway": "",
             "iloIpNetmask": "",
@@ -875,7 +875,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 80,
-            "typeName": "MID",
+            "type": "MID",
             "updPending": true,
             "xmppId": "atlanta-mid-16\\\\@ocdn.kabletown.net",
             "xmppPasswd": "X"
@@ -884,7 +884,7 @@
             "domainName": "ga.atlanta.kabletown.net",
             "guid": null,
             "hostName": "atlanta-org-1",
-            "httpsPort": null,
+            "httpsPort": 443,
             "iloIpAddress": "",
             "iloIpGateway": "",
             "iloIpNetmask": "",
@@ -907,7 +907,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 80,
-            "typeName": "EDGE",
+            "type": "EDGE",
             "updPending": true,
             "xmppId": "atlanta-org-1\\\\@ocdn.kabletown.net",
             "xmppPasswd": "X"
@@ -916,7 +916,7 @@
             "domainName": "ga.atlanta.kabletown.net",
             "guid": null,
             "hostName": "atlanta-org-2",
-            "httpsPort": null,
+            "httpsPort": 443,
             "iloIpAddress": "",
             "iloIpGateway": "",
             "iloIpNetmask": "",
@@ -939,7 +939,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 80,
-            "typeName": "EDGE",
+            "type": "EDGE",
             "updPending": true,
             "xmppId": "atlanta-org-1\\\\@ocdn.kabletown.net",
             "xmppPasswd": "X"
@@ -948,7 +948,7 @@
             "domainName": "ga.atlanta.kabletown.net",
             "guid": null,
             "hostName": "atlanta-mid-01",
-            "httpsPort": null,
+            "httpsPort": 443,
             "iloIpAddress": "",
             "iloIpGateway": "",
             "iloIpNetmask": "",
@@ -971,7 +971,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 80,
-            "typeName": "MID",
+            "type": "MID",
             "updPending": true,
             "xmppId": "atlanta-mid-01\\\\@ocdn.kabletown.net",
             "xmppPasswd": "X"
@@ -980,7 +980,7 @@
             "domainName": "kabletown.net",
             "guid": null,
             "hostName": "rascal01",
-            "httpsPort": null,
+            "httpsPort": 443,
             "iloIpAddress": "",
             "iloIpGateway": "",
             "iloIpNetmask": "",
@@ -1003,7 +1003,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 81,
-            "typeName": "TRAFFIC_MONITOR",
+            "type": "TRAFFIC_MONITOR",
             "updPending": true,
             "xmppId": "",
             "xmppPasswd": "X"
@@ -1035,7 +1035,7 @@
             "routerHostName": "",
             "routerPortName": "",
             "tcpPort": 8088,
-            "typeName": "RIAK",
+            "type": "RIAK",
             "updPending": true,
             "xmppId": "",
             "xmppPasswd": ""
@@ -1435,6 +1435,14 @@
             "tenant": 4,
             "uid": 0,
             "username": "federationuser"
+        }
+    ],
+    "steeringTargets": [
+        {
+            "deliveryService": "ds1",
+            "target": "ds2",
+            "value": 42,
+            "type": "STEERING_WEIGHT"
         }
     ]
 }

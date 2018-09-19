@@ -197,7 +197,7 @@ type CRConfigOrError struct {
 func GetMonitors(toClient *to.Session, includeOffline bool) ([]tc.Server, error) {
 	trafficMonitorType := "RASCAL"
 	monitorTypeQuery := map[string][]string{"type": []string{trafficMonitorType}}
-	servers, err := toClient.ServersByType(monitorTypeQuery)
+	servers, _, err := toClient.GetServersByType(monitorTypeQuery)
 	if err != nil {
 		return nil, fmt.Errorf("getting monitors from Traffic Ops: %v", err)
 	}
@@ -283,7 +283,7 @@ func GetCDNs(servers []tc.Server) map[tc.CDNName]struct{} {
 func GetCRConfigs(cdns map[tc.CDNName]struct{}, toClient *to.Session) map[tc.CDNName]CRConfigOrError {
 	crConfigs := map[tc.CDNName]CRConfigOrError{}
 	for cdn, _ := range cdns {
-		crConfigBytes, err := toClient.CRConfigRaw(string(cdn))
+		crConfigBytes, _, err := toClient.GetCRConfig(string(cdn))
 		if err != nil {
 			crConfigs[cdn] = CRConfigOrError{Err: fmt.Errorf("getting CRConfig: %v", err)}
 			continue

@@ -36,7 +36,6 @@ under the License.
                     <li role="menuitem"><a ng-if="dsRequest.status == 'draft'" ng-click="editStatus('submitted')">Change status to: SUBMITTED</a></li>
                 </ul>
             </div>
-            <button class="btn btn-primary" title="View Comments" ng-click="viewComments()">View Comments</button>
         </div>
         <div class="pull-right" role="group" ng-show="!settings.isRequest && !settings.isNew">
             <button type="button" class="btn btn-primary" title="Delivery Service Charts" ng-if="showChartsButton" ng-click="openCharts(deliveryService)"><i class="fa fa-bar-chart fa-fw"></i></button>
@@ -67,7 +66,6 @@ under the License.
     <div class="x_content">
         <br>
         <form name="deliveryServiceForm" class="form-horizontal form-label-left" novalidate>
-
             <div class="form-group" ng-class="{'has-error': hasError(deliveryServiceForm.active), 'has-feedback': hasError(deliveryServiceForm.active)}">
                 <label class="control-label col-md-2 col-sm-2 col-xs-12">
                     <span uib-popover-html="label('active', 'desc')" popover-trigger="click" popover-placement="top" popover-append-to-body="true" popover-class="popover-class">{{label('active', 'title')}}</span> *

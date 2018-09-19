@@ -18,10 +18,16 @@ package tc
 import (
 	"database/sql"
 	"errors"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/apache/trafficcontrol/lib/go-util"
 )
+
+const DNSSECKSKType = "ksk"
+const DNSSECZSKType = "zsk"
+const DNSSECKeyStatusNew = "new"
 
 // DeliveryServiceSSLKeysResponse ...
 type DeliveryServiceSSLKeysResponse struct {
@@ -46,7 +52,7 @@ type DeliveryServiceSSLKeys struct {
 	Country         string                            `json:"country,omitempty"`
 	State           string                            `json:"state,omitempty"`
 	Key             string                            `json:"key"`
-	Version         string                            `json:"version"`
+	Version         util.JSONNumAsStr                 `json:"version"`
 	Certificate     DeliveryServiceSSLKeysCertificate `json:"certificate,omitempty"`
 }
 
@@ -61,7 +67,7 @@ type DeliveryServiceSSLKeysReq struct {
 	State           *string `json:"state,omitempty"`
 	// Key is the XMLID of the delivery service
 	Key         *string                            `json:"key"`
-	Version     *string                            `json:"version"`
+	Version     *util.JSONNumAsStr                 `json:"version"`
 	Certificate *DeliveryServiceSSLKeysCertificate `json:"certificate,omitempty"`
 }
 
@@ -75,7 +81,8 @@ func (r *DeliveryServiceSSLKeysReq) Sanitize() {
 		r.Key = &k
 	}
 	if r.Version == nil {
-		r.Version = util.StrPtr("")
+		numStr := util.JSONNumAsStr("")
+		r.Version = &numStr
 	}
 }
 
@@ -151,15 +158,48 @@ type DNSSECKeyDSRecord struct {
 	Digest     string `json:"digest"`
 }
 
+// CDNDNSSECGenerateReqDate is the date accepted by CDNDNSSECGenerateReq.
+// This will unmarshal a UNIX epoch integer, a RFC3339 string, the old format string used by Perl '2018-08-21+14:26:06', and the old format string sent by the Portal '2018-08-21 14:14:42'.
+// This exists to fix a critical bug, see https://github.com/apache/trafficcontrol/issues/2723 - it SHOULD NOT be used by any other endpoint.
+type CDNDNSSECGenerateReqDate int64
+
+func (i *CDNDNSSECGenerateReqDate) UnmarshalJSON(d []byte) error {
+	const oldPortalDateFormat = `2006-01-02 15:04:05`
+	const oldPerlUIDateFormat = `2006-01-02+15:04:05`
+	if len(d) == 0 {
+		return errors.New("empty object")
+	}
+	if d[0] == '"' {
+		d = d[1 : len(d)-1] // strip JSON quotes, to accept the UNIX epoch as a string or number
+	}
+	if di, err := strconv.ParseInt(string(d), 10, 64); err == nil {
+		*i = CDNDNSSECGenerateReqDate(di)
+		return nil
+	}
+	if t, err := time.Parse(time.RFC3339, string(d)); err == nil {
+		*i = CDNDNSSECGenerateReqDate(t.Unix())
+		return nil
+	}
+	if t, err := time.Parse(oldPortalDateFormat, string(d)); err == nil {
+		*i = CDNDNSSECGenerateReqDate(t.Unix())
+		return nil
+	}
+	if t, err := time.Parse(oldPerlUIDateFormat, string(d)); err == nil {
+		*i = CDNDNSSECGenerateReqDate(t.Unix())
+		return nil
+	}
+	return errors.New("invalid date")
+}
+
 type CDNDNSSECGenerateReq struct {
 	// Key is the CDN name, as documented in the API documentation.
 	Key *string `json:"key"`
 	// Name is the CDN domain, as documented in the API documentation.
-	Name              *string `json:"name"`
-	TTL               *uint64 `json:"ttl,string"`
-	KSKExpirationDays *uint64 `json:"kskExpirationDays,string"`
-	ZSKExpirationDays *uint64 `json:"zskExpirationDays,string"`
-	EffectiveDateUnix *int64  `json:"effectiveDate"`
+	Name              *string                   `json:"name"`
+	TTL               *util.JSONIntStr          `json:"ttl"`
+	KSKExpirationDays *util.JSONIntStr          `json:"kskExpirationDays"`
+	ZSKExpirationDays *util.JSONIntStr          `json:"zskExpirationDays"`
+	EffectiveDateUnix *CDNDNSSECGenerateReqDate `json:"effectiveDate"`
 }
 
 func (r CDNDNSSECGenerateReq) Validate(tx *sql.Tx) error {

@@ -27,7 +27,6 @@ import (
 	"time"
 
 	"github.com/apache/trafficcontrol/lib/go-tc"
-	"github.com/apache/trafficcontrol/lib/go-tc/v13"
 	"github.com/apache/trafficcontrol/lib/go-util"
 	"github.com/apache/trafficcontrol/traffic_ops/traffic_ops_golang/api"
 	"github.com/apache/trafficcontrol/traffic_ops/traffic_ops_golang/test"
@@ -36,9 +35,9 @@ import (
 	sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
-func getTestCacheGroups() []v13.CacheGroup {
-	cgs := []v13.CacheGroup{}
-	testCG1 := v13.CacheGroup{
+func getTestCacheGroups() []tc.CacheGroup {
+	cgs := []tc.CacheGroup{}
+	testCG1 := tc.CacheGroup{
 		ID:                          1,
 		Name:                        "cachegroup1",
 		ShortName:                   "cg1",
@@ -57,7 +56,7 @@ func getTestCacheGroups() []v13.CacheGroup {
 	}
 	cgs = append(cgs, testCG1)
 
-	testCG2 := v13.CacheGroup{
+	testCG2 := tc.CacheGroup{
 		ID:                          1,
 		Name:                        "parentCacheGroup",
 		ShortName:                   "pg1",
@@ -126,12 +125,11 @@ func TestReadCacheGroups(t *testing.T) {
 	mock.ExpectBegin()
 	mock.ExpectQuery("SELECT").WillReturnRows(rows)
 	mock.ExpectCommit()
-	v := map[string]string{"id": "1"}
 
-	reqInfo := api.APIInfo{Tx: db.MustBegin(), CommitTx: util.BoolPtr(false)}
-	cachegroups, errs, _ := GetTypeSingleton()(&reqInfo).Read(v)
-	if len(errs) > 0 {
-		t.Errorf("cdn.Read expected: no errors, actual: %v", errs)
+	reqInfo := api.APIInfo{Tx: db.MustBegin(), Params: map[string]string{"id": "1"}}
+	cachegroups, userErr, sysErr, _ := GetTypeSingleton()(&reqInfo).Read()
+	if userErr != nil || sysErr != nil {
+		t.Errorf("Read expected: no errors, actual: %v %v", userErr, sysErr)
 	}
 
 	if len(cachegroups) != 2 {
@@ -191,8 +189,7 @@ func TestValidate(t *testing.T) {
 	mock.ExpectBegin()
 	mock.ExpectQuery("SELECT").WillReturnRows(rows)
 	tx := db.MustBegin()
-
-	reqInfo := api.APIInfo{Tx: tx, CommitTx: util.BoolPtr(false)}
+	reqInfo := api.APIInfo{Tx: tx}
 
 	// invalid name, shortname, loattude, and longitude
 	id := 1
@@ -204,7 +201,7 @@ func TestValidate(t *testing.T) {
 	ty := "EDGE_LOC"
 	ti := 6
 	lu := tc.TimeNoMod{Time: time.Now()}
-	c := TOCacheGroup{ReqInfo: &reqInfo, CacheGroupNullable: v13.CacheGroupNullable{
+	c := TOCacheGroup{ReqInfo: &reqInfo, CacheGroupNullable: tc.CacheGroupNullable{
 		ID:                  &id,
 		Name:                &nm,
 		ShortName:           &sn,
@@ -238,7 +235,7 @@ func TestValidate(t *testing.T) {
 	la = 90.0
 	lo = 90.0
 	lm = []tc.LocalizationMethod{tc.LocalizationMethodGeo, tc.LocalizationMethodCZ, tc.LocalizationMethodDeepCZ}
-	c = TOCacheGroup{ReqInfo: &reqInfo, CacheGroupNullable: v13.CacheGroupNullable{
+	c = TOCacheGroup{ReqInfo: &reqInfo, CacheGroupNullable: tc.CacheGroupNullable{
 		ID:                  &id,
 		Name:                &nm,
 		ShortName:           &sn,
