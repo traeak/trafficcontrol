@@ -51,6 +51,7 @@ type Deliveryservices struct {
 	SslKeyVersion        null.Int              `db:"ssl_key_version" json:"sslKeyVersion"`
 	Ipv6RoutingEnabled   bool                  `db:"ipv6_routing_enabled" json:"ipv6RoutingEnabled"`
 	RangeRequestHandling null.Int              `db:"range_request_handling" json:"rangeRequestHandling"`
+	SliceBlockBytes      null.String           `db:"slice_blockbytes" json:"sliceBlockBytes"`
 	EdgeHeaderRewrite    null.String           `db:"edge_header_rewrite" json:"edgeHeaderRewrite"`
 	OriginShield         null.String           `db:"origin_shield" json:"originShield"`
 	MidHeaderRewrite     null.String           `db:"mid_header_rewrite" json:"midHeaderRewrite"`
@@ -167,6 +168,7 @@ func postDeliveryservice(payload []byte, db *sqlx.DB) (interface{}, error) {
 	sqlString += ",ssl_key_version"
 	sqlString += ",ipv6_routing_enabled"
 	sqlString += ",range_request_handling"
+	sqlString += ",slice_blockbytes"
 	sqlString += ",edge_header_rewrite"
 	sqlString += ",origin_shield"
 	sqlString += ",mid_header_rewrite"
@@ -209,6 +211,7 @@ func postDeliveryservice(payload []byte, db *sqlx.DB) (interface{}, error) {
 	sqlString += ",:ssl_key_version"
 	sqlString += ",:ipv6_routing_enabled"
 	sqlString += ",:range_request_handling"
+	sqlString += ",:slice_blockbytes"
 	sqlString += ",:edge_header_rewrite"
 	sqlString += ",:origin_shield"
 	sqlString += ",:mid_header_rewrite"
@@ -276,6 +279,7 @@ func putDeliveryservice(name string, payload []byte, db *sqlx.DB) (interface{}, 
 	sqlString += ",ssl_key_version = :ssl_key_version"
 	sqlString += ",ipv6_routing_enabled = :ipv6_routing_enabled"
 	sqlString += ",range_request_handling = :range_request_handling"
+	sqlString += ",slice_blockbytes = :slice_blockbytes"
 	sqlString += ",edge_header_rewrite = :edge_header_rewrite"
 	sqlString += ",origin_shield = :origin_shield"
 	sqlString += ",mid_header_rewrite = :mid_header_rewrite"

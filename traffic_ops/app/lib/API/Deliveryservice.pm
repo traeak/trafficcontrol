@@ -270,6 +270,7 @@ sub show {
 				"protocol"             => $row->protocol,
 				"qstringIgnore"        => $row->qstring_ignore,
 				"rangeRequestHandling" => $row->range_request_handling,
+				"sliceBlocksize"       => $row->slice_blocksize,
 				"regexRemap"           => $row->regex_remap,
 				"regionalGeoBlocking"  => \$row->regional_geo_blocking,
 				"routingName"          => $row->routing_name,

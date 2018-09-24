@@ -186,6 +186,7 @@ var FormDeliveryServiceController = function(deliveryService, dsCurrent, origin,
         { value: 0, label: "0 - Don't cache" },
         { value: 1, label: "1 - Use background_fetch plugin" },
         { value: 2, label: "2 - Use cache_range_requests plugin" }
+        { value: 3, label: "3 - Use slice plugin" }
     ];
 
     $scope.msoAlgos = [

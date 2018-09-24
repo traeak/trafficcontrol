@@ -41,6 +41,7 @@ use constant {
 	RRH_DONT_CACHE			=> 0,
 	RRH_BACKGROUND_FETCH	=> 1,
 	RRH_CACHE_RANGE_REQUEST	=> 2,
+	RRH_SLICE				=> 3,
 };
 
 #Sub to generate config metadata
@@ -539,6 +540,7 @@ sub delivery_service_data_by_profile {
 		deliveryservice.protocol,
 		deliveryservice.ssl_key_version,
 		deliveryservice.range_request_handling,
+		deliveryservice.slice_blockbytes,
 		deliveryservice.fq_pacing_rate,
 		deliveryservice.edge_header_rewrite,
 		deliveryservice.mid_header_rewrite,
@@ -585,6 +587,7 @@ sub delivery_service_data_by_profile {
 	my $deliveryservice_protocol;
 	my $deliveryservice_ssl_key_version;
 	my $deliveryservice_range_request_handling;
+	my $deliveryservice_slice_blockbytes;
 	my $deliveryservice_fq_pacing_rate;
 	my $deliveryservice_edge_header_rewrite;
 	my $deliveryservice_mid_header_rewrite;
@@ -611,6 +614,7 @@ sub delivery_service_data_by_profile {
 		\$deliveryservice_protocol,
 		\$deliveryservice_ssl_key_version,
 		\$deliveryservice_range_request_handling,
+		\$deliveryservice_slice_blockbytes,
 		\$deliveryservice_fq_pacing_rate,
 		\$deliveryservice_edge_header_rewrite,
 		\$deliveryservice_mid_header_rewrite,
@@ -641,6 +645,7 @@ sub delivery_service_data_by_profile {
 					"protocol" => $deliveryservice_protocol,
 					"ssl_key_version" => $deliveryservice_ssl_key_version,
 					"range_request_handling" => $deliveryservice_range_request_handling,
+					"slice_blockbytes" => $deliveryservice_slice_blockbytes,
 					"fq_pacing_rate" => $deliveryservice_fq_pacing_rate,
 					"edge_header_rewrite" => $deliveryservice_edge_header_rewrite,
 					"mid_header_rewrite" => $deliveryservice_mid_header_rewrite,
@@ -682,6 +687,7 @@ sub profile_ds_data {
 		my $regex_remap                 = $row->{'regex_remap'};
 		my $protocol                    = $row->{'protocol'};
 		my $range_request_handling      = $row->{'range_request_handling'};
+		my $slice_blockbytes            = $row->{'slice_blockbytes'};
 		my $fq_pacing_rate              = $row->{'fq_pacing_rate'};
 		my $origin_shield               = $row->{'origin_shield'};
 		my $cacheurl                    = $row->{'cacheurl'};
@@ -752,6 +758,7 @@ sub profile_ds_data {
 		$dsinfo->{dslist}->[$j]->{"mid_header_rewrite"}          = $mid_header_rewrite;
 		$dsinfo->{dslist}->[$j]->{"regex_remap"}                 = $regex_remap;
 		$dsinfo->{dslist}->[$j]->{"range_request_handling"}      = $range_request_handling;
+		$dsinfo->{dslist}->[$j]->{"slice_blockbytes"}            = $slice_blockbytes;
 		$dsinfo->{dslist}->[$j]->{"fq_pacing_rate"}              = $fq_pacing_rate;
 		$dsinfo->{dslist}->[$j]->{"origin_shield"}               = $origin_shield;
 		$dsinfo->{dslist}->[$j]->{"cacheurl"}                    = $cacheurl;
@@ -808,6 +815,7 @@ sub cdn_ds_data {
 		my $regex_remap                 = $row->regex_remap;
 		my $protocol                    = $row->protocol;
 		my $range_request_handling      = $row->range_request_handling;
+		my $slice_blockbytes            = $row->slice_blockbytes;
 		my $fq_pacing_rate              = $row->fq_pacing_rate;
 		my $origin_shield               = $row->origin_shield;
 		my $cacheurl                    = $row->cacheurl;
@@ -878,6 +886,7 @@ sub cdn_ds_data {
 		$dsinfo->{dslist}->[$j]->{"mid_header_rewrite"}          = $mid_header_rewrite;
 		$dsinfo->{dslist}->[$j]->{"regex_remap"}                 = $regex_remap;
 		$dsinfo->{dslist}->[$j]->{"range_request_handling"}      = $range_request_handling;
+		$dsinfo->{dslist}->[$j]->{"slice_blockbytes"}            = $slice_blockbytes;
 		$dsinfo->{dslist}->[$j]->{"fq_pacing_rate"}              = $fq_pacing_rate;
 		$dsinfo->{dslist}->[$j]->{"origin_shield"}               = $origin_shield;
 		$dsinfo->{dslist}->[$j]->{"cacheurl"}                    = $cacheurl;
@@ -944,6 +953,7 @@ sub ds_data {
 		my $regex_remap                 = $dsinfo->regex_remap;
 		my $protocol                    = $dsinfo->protocol;
 		my $range_request_handling      = $dsinfo->range_request_handling;
+		my $slice_blockbytes            = $dsinfo->slice_blockbytes;
 		my $fq_pacing_rate              = $dsinfo->fq_pacing_rate;
 		my $origin_shield               = $dsinfo->origin_shield;
 		my $cacheurl                    = $dsinfo->cacheurl;
@@ -1013,6 +1023,7 @@ sub ds_data {
 		$response_obj->{dslist}->[$j]->{"mid_header_rewrite"}          = $mid_header_rewrite;
 		$response_obj->{dslist}->[$j]->{"regex_remap"}                 = $regex_remap;
 		$response_obj->{dslist}->[$j]->{"range_request_handling"}      = $range_request_handling;
+		$response_obj->{dslist}->[$j]->{"slice_blockbytes"}            = $slice_blockbytes;
 		$response_obj->{dslist}->[$j]->{"fq_pacing_rate"}              = $fq_pacing_rate;
 		$response_obj->{dslist}->[$j]->{"origin_shield"}               = $origin_shield;
 		$response_obj->{dslist}->[$j]->{"cacheurl"}                    = $cacheurl;
@@ -1134,6 +1145,7 @@ sub remap_ds_data {
 			my $ds_xml_id                   = $dsinfo->xml_id;
 			my $mid_header_rewrite          = $dsinfo->mid_header_rewrite;
 			my $range_request_handling      = $dsinfo->range_request_handling;
+			my $slice_blockbytes            = $dsinfo->slice_blockbytes;
 			my $cacheurl                    = $dsinfo->cacheurl;
 
 
@@ -1144,6 +1156,7 @@ sub remap_ds_data {
 			$response_obj->{dslist}->[$j]->{"cacheurl"}                    = $cacheurl;
 			$response_obj->{dslist}->[$j]->{"qstring_ignore"}              = $qstring_ignore;
 			$response_obj->{dslist}->[$j]->{"range_request_handling"}      = $range_request_handling;
+			$response_obj->{dslist}->[$j]->{"slice_blockbytes"}            = $slice_blockbytes;
 
 			if ( defined($mid_header_rewrite) ) {
 				my $fname = "hdr_rw_mid_" . $ds_xml_id . ".config";
@@ -1182,6 +1195,7 @@ sub remap_ds_data {
 			my $regex_remap                 = $dsinfo->regex_remap;
 			my $protocol                    = $dsinfo->protocol;
 			my $range_request_handling      = $dsinfo->range_request_handling;
+			my $slice_blockbytes            = $dsinfo->slice_blockbytes;
 			my $fq_pacing_rate              = $dsinfo->fq_pacing_rate;
 			my $cacheurl                    = $dsinfo->cacheurl;
 			my $remap_text                  = $dsinfo->remap_text;
@@ -1246,6 +1260,7 @@ sub remap_ds_data {
 			$response_obj->{dslist}->[$j]->{"edge_header_rewrite"}         = $edge_header_rewrite;
 			$response_obj->{dslist}->[$j]->{"regex_remap"}                 = $regex_remap;
 			$response_obj->{dslist}->[$j]->{"range_request_handling"}      = $range_request_handling;
+			$response_obj->{dslist}->[$j]->{"slice_blockbytes"}            = $slice_blockbytes;
 			$response_obj->{dslist}->[$j]->{"fq_pacing_rate"}              = $fq_pacing_rate;
 			$response_obj->{dslist}->[$j]->{"cacheurl"}                    = $cacheurl;
 			$response_obj->{dslist}->[$j]->{"remap_text"}                  = $remap_text;
@@ -2632,7 +2647,7 @@ sub remap_dot_config {
 					$mid_remap{ $ds->{org} } .= " \@pparam=--" . $ck_entry . "=" . $ds->{'param'}->{'cachekey.config'}->{$ck_entry};
 				}
 			}
-			if ( $ds->{range_request_handling} == RRH_CACHE_RANGE_REQUEST ) {
+			if ( $ds->{range_request_handling} == RRH_CACHE_RANGE_REQUEST || $ds->{range_request_handling} == RRH_SLICE ) {
 				$mid_remap{ $ds->{org} } .= " \@plugin=cache_range_requests.so";
 			}
 		}
@@ -2741,6 +2756,13 @@ sub build_remap_line {
 		$text .= " \@plugin=background_fetch.so \@pparam=bg_fetch.config";
 	}
 	elsif ( $remap->{range_request_handling} == RRH_CACHE_RANGE_REQUEST ) {
+		$text .= " \@plugin=cache_range_requests.so ";
+	}
+	elsif ( $remap->{range_request_handling} == RRH_SLICE ) {
+		$text .= " \@plugin=slice.so ";
+		if ( defined( $remap->{slice_blockbytes} ) && $remap->{slice_blockbytes} ne "" ) {
+			$text .= " \@pparam=blockbytes:" . $remap->{slice_blockbytes};
+		}
 		$text .= " \@plugin=cache_range_requests.so ";
 	}
 	if ( defined( $remap->{remap_text} ) ) {

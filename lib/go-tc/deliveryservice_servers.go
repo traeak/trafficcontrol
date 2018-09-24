@@ -158,6 +158,7 @@ type DSSDeliveryService struct {
 	Protocol             *int             `json:"protocol" db:"protocol"`
 	QStringIgnore        *int             `json:"qstringIgnore" db:"qstring_ignore"`
 	RangeRequestHandling *int             `json:"rangeRequestHandling" db:"range_request_handling"`
+	SliceBlockBytes      *string          `json:"sliceBlockBytes" db:"slice_blockbytes"`
 	RegexRemap           *string          `json:"regexRemap" db:"regex_remap"`
 	RegionalGeoBlocking  *bool            `json:"regionalGeoBlocking" db:"regional_geo_blocking"`
 	RemapText            *string          `json:"remapText" db:"remap_text"`

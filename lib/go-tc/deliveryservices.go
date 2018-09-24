@@ -67,6 +67,11 @@ type DeleteDeliveryServiceResponse struct {
 }
 
 type DeliveryService struct {
+	DeliveryServiceV13
+	SliceBlockBytes   string          `json:"sliceBlockBytes"`
+}
+
+type DeliveryServiceV13 struct {
 	DeliveryServiceV12
 	DeepCachingType   DeepCachingType `json:"deepCachingType"`
 	FQPacingRate      int             `json:"fqPacingRate,omitempty"`
@@ -140,6 +145,11 @@ type DeliveryServiceV11 struct {
 }
 
 type DeliveryServiceNullable struct {
+	DeliveryServiceNullableV13
+	SliceBlockBytes   *string          `json:"sliceBlockBytes" db:"slice_block_bytes"`
+}
+
+type DeliveryServiceNullableV13 struct {
 	DeliveryServiceNullableV12
 	DeepCachingType   *DeepCachingType `json:"deepCachingType" db:"deep_caching_type"`
 	FQPacingRate      *int             `json:"fqPacingRate,omitempty"`
@@ -216,10 +226,20 @@ type DeliveryServiceNullableV11 struct {
 	ExampleURLs              []string                `json:"exampleURLs"`
 }
 
+// NewDeliveryServiceNullableFromV13 creates a new V14 DS from a V13 DS, filling new fields with appropriate defaults.
+func NewDeliveryServiceNullableFromV13(ds DeliveryServiceNullableV13) DeliveryServiceNullable {
+	newDS := DeliveryServiceNullable{DeliveryServiceNullableV13: ds}
+	newDS.Sanitize()
+	return newDS
+}
+
+func (ds *DeliveryServiceNullableV13) Sanitize() {
+	ds.DeliveryServiceNullableV12.Sanitize()
+}
+
 // NewDeliveryServiceNullableFromV12 creates a new V13 DS from a V12 DS, filling new fields with appropriate defaults.
 func NewDeliveryServiceNullableFromV12(ds DeliveryServiceNullableV12) DeliveryServiceNullable {
-	newDS := DeliveryServiceNullable{DeliveryServiceNullableV12: ds}
-	newDS.Sanitize()
+	newDS := NewDeliveryServiceNullableFromV13(DeliveryServiceNullableV13{ DeliveryServiceNullableV12: ds })
 	return newDS
 }
 

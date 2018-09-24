@@ -216,6 +216,7 @@ CREATE TABLE deliveryservice (
     ssl_key_version bigint DEFAULT '0'::bigint,
     ipv6_routing_enabled boolean DEFAULT false,
     range_request_handling smallint DEFAULT '0'::smallint,
+    slice_blockbytes text,
     edge_header_rewrite text,
     origin_shield text,
     mid_header_rewrite text,

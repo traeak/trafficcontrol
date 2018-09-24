@@ -80,6 +80,7 @@ type CsconfigRemap struct {
 	SslKeyVersion        null.Int    `db:"ssl_key_version" json:"sslKeyVersion"`
 	Ipv6RoutingEnabled   null.Int    `db:"ipv6_routing_enabled" json:"ipv6RoutingEnabled"`
 	RangeRequestHandling null.Int    `db:"range_request_handling" json:"rangeRequestHandling"`
+	SliceBlockBytes      null.String `db:"slice_blockbytes" json:"sliceBlockBytes"`
 	EdgeHeaderRewrite    null.String `db:"edge_header_rewrite" json:"edgeHeaderRewrite"`
 	OriginShield         null.String `db:"origin_shield" json:"originShield"`
 	MidHeaderRewrite     null.String `db:"mid_header_rewrite" json:"midHeaderRewrite"`
