@@ -23,7 +23,7 @@ ALTER TABLE deliveryservice
 -- SQL section 'Down' is executed when this migration is rolled back
 	
 UPDATE deliveryservice
-    SET range_request_handling '1'::smallint
+    SET range_request_handling = 1
 		WHERE range_request_handling = 3;
 
 ALTER TABLE deliveryservice
