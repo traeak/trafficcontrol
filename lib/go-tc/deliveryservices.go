@@ -146,7 +146,7 @@ type DeliveryServiceV11 struct {
 
 type DeliveryServiceNullable struct {
 	DeliveryServiceNullableV13
-	SliceBlockBytes   *string          `json:"sliceBlockBytes" db:"slice_block_bytes"`
+	SliceBlockBytes   *string          `json:"sliceBlockBytes" db:"slice_blockbytes"`
 }
 
 type DeliveryServiceNullableV13 struct {
