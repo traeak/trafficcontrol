@@ -272,6 +272,19 @@ under the License.
                     </div>
                 </div>
 
+                <div class="form-group" ng-class="{'has-error': hasError(deliveryServiceForm.sliceBlockBytes), 'has-feedback': hasError(deliveryServiceForm.sliceBlockBytes)}">
+                    <label class="control-label col-md-2 col-sm-2 col-xs-12">
+                        <span uib-popover-html="label('sliceBlockBytes', 'desc')" popover-trigger="click" popover-placement="top" popover-append-to-body="true" popover-class="popover-class">{{label('sliceBlockBytes', 'title')}}</span> *
+                    </label>
+                    <div class="col-md-10 col-sm-10 col-xs-12">
+                        <input name="sliceBlockBytes" type="text" class="form-control" ng-model="deliveryService.sliceBlockBytes" ng-pattern="/^(0-9)+[km]?$/" required atuofocus>
+                        <small class="input-error" ng-show="hasPropertyError(deliveryServiceForm.sliceBlockBytes, 'pattern')">Value must be in numeric bytes, and optionally use a 'm'(egabytes) or 'k'(ilobytes) postfix</small>
+                        <small class="input-diff" ng-show="settings.isRequest && open() && deliveryService.sliceBlockBytes != dsCurrent.sliceBlockBytes">Current Value: [ {{dsCurrent.sliceBlockBytes}} ]</small>
+                        <small ng-show="!settings.isNew && !settings.isRequest && deliveryService.sliceBlockBytes"><a href="/#!/origins/{{origin.id}}" target="_blank">View Details&nbsp;&nbsp;<i class="fa fs-xs fa-external-link"></i></a></small>
+                        <span ng-show="hasError(deliveryServiceForm.sliceBlockBytes)" class="form-control-feedback"><i class="fa fa-times"></i></span>
+                    </div>
+                </div>
+
                 <div class="form-group" ng-class="{'has-error': hasError(deliveryServiceForm.qstringIgnore), 'has-feedback': hasError(deliveryServiceForm.qstringIgnore)}">
                     <label class="control-label col-md-2 col-sm-2 col-xs-12">
                         <span uib-popover-html="label('qstringIgnore', 'desc')" popover-trigger="click" popover-placement="top" popover-append-to-body="true" popover-class="popover-class">{{label('qstringIgnore', 'title')}}</span> *

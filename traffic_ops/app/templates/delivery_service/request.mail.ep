@@ -88,6 +88,10 @@
                 <td><%= $params->{rangeRequestHandling} %></td>
             </tr>
             <tr>
+                <td>Slice Block Bytes:</td>
+                <td><%= $params->{sliceBlockBytes} %></td>
+            </tr>
+            <tr>
                 <td>Signed URLs / URL Tokenization:</td>
                 <td><%= $params->{hasSignedURLs} ? 'true' : 'false' %></td>
             </tr>

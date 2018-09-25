@@ -152,6 +152,7 @@ sub index {
 				"routingName"          => $row->routing_name,
 				"signed"               => defined( $row->signing_algorithm ) ? ( $row->signing_algorithm eq "url_sig" ? \1 : \0 ) : \0,
 				"signingAlgorithm"     => $row->signing_algorithm,
+				"sliceBlockBytes"      => $row->slice_blockbytes,
 				"sslKeyVersion"        => $row->ssl_key_version,
 				"tenantId"             => $row->tenant_id,
 				"tenant"               => defined( $row->tenant ) ? $row->tenant->name : undef,
@@ -270,13 +271,13 @@ sub show {
 				"protocol"             => $row->protocol,
 				"qstringIgnore"        => $row->qstring_ignore,
 				"rangeRequestHandling" => $row->range_request_handling,
-				"sliceBlocksize"       => $row->slice_blocksize,
 				"regexRemap"           => $row->regex_remap,
 				"regionalGeoBlocking"  => \$row->regional_geo_blocking,
 				"routingName"          => $row->routing_name,
 				"remapText"            => $row->remap_text,
 				"signed"               => defined( $row->signing_algorithm ) ? ( $row->signing_algorithm eq "url_sig" ? \1 : \0 ) : \0,
 				"signingAlgorithm"     => $row->signing_algorithm,
+				"slice_blockbytes"     => $row->slice_blockbytes,
 				"sslKeyVersion"        => $row->ssl_key_version,
 				"tenantId"             => $row->tenant_id,
 				"tenant"               => defined( $row->tenant ) ? $row->tenant->name : undef,
@@ -386,6 +387,7 @@ sub update {
 		regional_geo_blocking  => $params->{regionalGeoBlocking},
 		remap_text             => $params->{remapText},
 		routing_name           => UI::DeliveryService::sanitize_routing_name( $params->{routingName}, $ds ),
+		slice_blockbytes       => $params->{sliceBlockBytes},
 		ssl_key_version        => $params->{sslKeyVersion},
 		tenant_id              => $tenant_id,
 		tr_request_headers     => $params->{trRequestHeaders},
@@ -509,6 +511,7 @@ sub update {
 				"routingName"              => $rs->routing_name,
 				"signed"                   => defined( $rs->signing_algorithm ) ? ( $rs->signing_algorithm eq "url_sig" ) : \0,
 				"signingAlgorithm"         => $rs->signing_algorithm,
+				"sliceBlockBytes"          => $rs->slice_blockbytes,
 				"sslKeyVersion"            => $rs->ssl_key_version,
 				"tenantId"                 => $rs->tenant_id,
 				"trRequestHeaders"         => $rs->tr_request_headers,
@@ -643,6 +646,7 @@ sub safe_update {
 				"routingName"              => $rs->routing_name,
 				"signed"                   => defined( $rs->signing_algorithm ) ? ( $rs->signing_algorithm eq "url_sig" ) : \0,
 				"signingAlgorithm"         => $rs->signing_algorithm,
+				"sliceBlockBytes"          => $rs->slice_blockbytes,
 				"sslKeyVersion"            => $rs->ssl_key_version,
 				"trRequestHeaders"         => $rs->tr_request_headers,
 				"trResponseHeaders"        => $rs->tr_response_headers,
@@ -743,6 +747,7 @@ sub create {
 		regional_geo_blocking  => $params->{regionalGeoBlocking},
 		remap_text             => $params->{remapText},
 		routing_name           => UI::DeliveryService::sanitize_routing_name( $params->{routingName} ),
+		slice_blockbytes       => $params->{sliceBlockBytes},
 		ssl_key_version        => $params->{sslKeyVersion},
 		tenant_id              => $tenant_id,
 		tr_request_headers     => $params->{trRequestHeaders},
@@ -868,6 +873,7 @@ sub create {
 				"routingName"              => $insert->routing_name,
 				"signed"                   => defined( $insert->signing_algorithm ) ? ( $insert->signing_algorithm eq "url_sig" ) : \0,
 				"signingAlgorithm"         => $insert->signing_algorithm,
+				"sliceBlockBytes"          => $insert->slice_blockbytes,
 				"sslKeyVersion"            => $insert->ssl_key_version,
 				"tenantId"                 => $insert->tenant_id,
 				"trRequestHeaders"         => $insert->tr_request_headers,
@@ -1061,6 +1067,7 @@ sub get_deliveryservices_by_serverId {
 					"routingName"          => $row->routing_name,
 					"signed"               => defined( $row->signing_algorithm ) ? ( $row->signing_algorithm eq "url_sig" ? \1 : \0 ) : \0,
 					"signingAlgorithm"     => $row->signing_algorithm,
+					"sliceBlockBytes"      => $row->slice_blockbytes,
 					"sslKeyVersion"        => $row->ssl_key_version,
 					"tenantId"             => $row->tenant_id,
 					"tenant"               => defined( $row->tenant ) ? $row->tenant->name : undef,
@@ -1162,6 +1169,7 @@ sub get_deliveryservices_by_userId {
 					"routingName"          => $row->routing_name,
 					"signed"               => defined( $row->signing_algorithm ) ? ( $row->signing_algorithm eq "url_sig" ? \1 : \0 ) : \0,
 					"signingAlgorithm"     => $row->signing_algorithm,
+					"sliceBlockBytes"      => $row->slice_blockbytes,
 					"sslKeyVersion"        => $row->ssl_key_version,
 					"tenantId"             => $row->tenant_id,
 					"tenant"               => defined( $row->tenant ) ? $row->tenant->name : undef,
@@ -1391,7 +1399,7 @@ sub is_deliveryservice_request_valid {
 
 	my $rules = {
 		fields => [
-			qw/customer contentType deepCachingType deliveryProtocol routingType routingName serviceDesc peakBPSEstimate peakTPSEstimate maxLibrarySizeEstimate originURL hasOriginDynamicRemap originTestFile hasOriginACLWhitelist originHeaders otherOriginSecurity queryStringHandling rangeRequestHandling hasSignedURLs hasNegativeCachingCustomization negativeCachingCustomizationNote serviceAliases rateLimitingGBPS rateLimitingTPS overflowService headerRewriteEdge headerRewriteMid headerRewriteRedirectRouter notes/
+			qw/customer contentType deepCachingType deliveryProtocol routingType routingName serviceDesc peakBPSEstimate peakTPSEstimate maxLibrarySizeEstimate originURL hasOriginDynamicRemap originTestFile hasOriginACLWhitelist originHeaders otherOriginSecurity queryStringHandling rangeRequestHandling sliceBlockBytes hasSignedURLs hasNegativeCachingCustomization negativeCachingCustomizationNote serviceAliases rateLimitingGBPS rateLimitingTPS overflowService headerRewriteEdge headerRewriteMid headerRewriteRedirectRouter notes/
 		],
 
 		# Validation checks to perform
@@ -1426,7 +1434,7 @@ sub is_deliveryservice_valid {
 
 	my $rules = {
 		fields => [
-			qw/active cacheurl ccrDnsTtl cdnId checkPath deepCachingType displayName dnsBypassCname dnsBypassIp dnsBypassIp6 dnsBypassTtl dscp edgeHeaderRewrite fqPacingRate geoLimitRedirectURL geoLimit geoLimitCountries geoProvider globalMaxMbps globalMaxTps httpBypassFqdn infoUrl initialDispersion ipv6RoutingEnabled logsEnabled longDesc longDesc1 longDesc2 maxDnsAnswers midHeaderRewrite missLat missLong multiSiteOrigin multiSiteOriginAlgorithm orgServerFqdn originShield profileId protocol qstringIgnore rangeRequestHandling regexRemap regionalGeoBlocking remapText routingName signed signingAlgorithm sslKeyVersion tenantId trRequestHeaders trResponseHeaders typeId xmlId/
+			qw/active cacheurl ccrDnsTtl cdnId checkPath deepCachingType displayName dnsBypassCname dnsBypassIp dnsBypassIp6 dnsBypassTtl dscp edgeHeaderRewrite fqPacingRate geoLimitRedirectURL geoLimit geoLimitCountries geoProvider globalMaxMbps globalMaxTps httpBypassFqdn infoUrl initialDispersion ipv6RoutingEnabled logsEnabled longDesc longDesc1 longDesc2 maxDnsAnswers midHeaderRewrite missLat missLong multiSiteOrigin multiSiteOriginAlgorithm orgServerFqdn originShield profileId protocol qstringIgnore rangeRequestHandling sliceBlockBytes regexRemap regionalGeoBlocking remapText routingName signed signingAlgorithm sslKeyVersion tenantId trRequestHeaders trResponseHeaders typeId xmlId/
 		],
 
 		# validation checks to perform for ALL delivery services
@@ -1452,6 +1460,7 @@ sub is_deliveryservice_valid {
 			protocol			=> [ \&is_valid_int_or_undef ],
 			qstringIgnore			=> [ \&is_valid_int_or_undef ],
 			rangeRequestHandling		=> [ \&is_valid_int_or_undef ],
+			sliceBlockBytes		=> [ \&is_valid_int_or_undef ], #BNO
 			sslKeyVersion			=> [ \&is_valid_int_or_undef ],
 			tenantId			=> [ \&is_valid_int_or_undef ],
 			regionalGeoBlocking		=> [ is_required("is required") ],

@@ -253,23 +253,37 @@
 			<% } %>
 		<% } %>
 	</div> <br>
+
 	<div class="block form-row" id='range_request_handlingi_row'>
 		<% unless (field('ds.range_request_handling')->valid) { %>
 			<span class="field-with-error"><%= field('ds.range_request_handling')->error %></span>
 		<% } %>
 		%= label_for 'range_request_handling' => 'Range Request Handling', class => 'label'
 		<% if ($priv_level >= 20) { %>
-			%= field('ds.range_request_handling')->select([[ '0 - Don\'t cache' => 0], [ '1 - Use background_fetch plugin' => 1], ['2 - use cache_range_requests plugin' => 2]]);
+			%= field('ds.range_request_handling')->select([[ '0 - Don\'t cache' => 0], [ '1 - Use background_fetch plugin' => 1], ['2 - use cache_range_requests plugin' => 2], ['3' - use slice plugin' => 3]]);
 		<% } else { %>
 			<% if ($ds->range_request_handling == 0) { %>
 				%= field('ds.range_request_handling')->text(class => 'field', value =>  '0 - Don\'t cache', readonly => 'readonly');
 			<% } elsif ($ds->range_request_handling == 1) { %>
 				%= field('ds.range_request_handling')->text(class => 'field', value =>  '1 - Use background_fetch plugin', readonly => 'readonly');
-			<% } else { %>
+			<% } elsif ($ds->range_request_handling == 2) { %>
 				%= field('ds.range_request_handling')->text(class => 'field', value =>  '2 - use cache_range_requests plugin', readonly => 'readonly');
+			<% } elsif ($ds->range_request_handling == 3) { %>
+				%= field('ds.range_request_handling')->text(class => 'field', value =>  '3 - use slice plugin', readonly => 'readonly');
 			<% } %>
 		<% } %>
 	</div> <br>
+	<div class="block form-row" id="slice_blockbytes_row">
+		<% unless (field('ds.slice_blockbytes')->valid) { %>
+			<span class="field-with-error"><%= field('ds.slice_blockbytes')->error %></span>
+		<% } %>
+		%= label_for 'slice_blockbytes' => 'Slice Block Bytes (10M or 512K are valid entries, default is 1M)', class => 'label'
+		<% if ($priv_level >= 20) { %>
+		%= field('ds.slice_blockbytes')->text(class => 'field', id => 'slice_blockbytes', name => 'ds.slice_blockbytes');
+		<% } else { %>
+		%= field('ds.slice_blockbytes')->text(class => 'field', readonly => 'readonly');
+		<% } %>
+	</div>
 	<div class="block form-row" id='dns_bypass_ip_row'>
 		<% unless (field('ds.dns_bypass_ip')->valid) { %>
 			<span class="field-with-error"><%= field('ds.dns_bypass_ip')->error %></span>
@@ -583,20 +597,20 @@
 		%= field('ds.origin_shield')->text(class => 'field', readonly => 'readonly');
 		<% } %>
 	</div>
-        <div class="block form-row" id="regional_geo_blocking_row">
-        <% unless (field('ds.regional_geo_blocking')->valid) { %>
-	        <span class="field-with-error"><%= field('ds.regional_geo_blocking')->error %></span>
+	<div class="block form-row" id="regional_geo_blocking_row">
+		<% unless (field('ds.regional_geo_blocking')->valid) { %>
+			<span class="field-with-error"><%= field('ds.regional_geo_blocking')->error %></span>
 		<% } %>
-        %= label_for 'regional_geo_blocking' => 'Regional Geoblocking', class => 'label'
-        <% if ($priv_level >= 20) { %>
-        %= field('ds.regional_geo_blocking')->select([ [Disabled => 0], [Enabled => 1]]);
-        <% } else { %>
+			%= label_for 'regional_geo_blocking' => 'Regional Geoblocking', class => 'label'
+			<% if ($priv_level >= 20) { %>
+				%= field('ds.regional_geo_blocking')->select([ [Disabled => 0], [Enabled => 1]]);
+			<% } else { %>
 			<%  if ($ds-> active == 0 ) {%>
 				%= field('ds.regional_geo_blocking')->text(class => 'field', readonly => 'readonly', value => 'Disabled');
 			<% } else { %>
 				%= field('ds.regional_geo_blocking')->text(class => 'field', readonly => 'readonly', value => 'Enabled');
 			<% } %>
-        <% } %>
+		<% } %>
 	</div>
 	<div class="block form-row" id='anonymous_blocking_enabled_row'>
 		<% unless (field('ds.anonymous_blocking_enabled')->valid) { %>
@@ -652,7 +666,6 @@
 		%= field('ds.deep_caching_type')->select([["NEVER" => "NEVER"], ["ALWAYS" => "ALWAYS"]]);
 		<% } else { %>
 		%= field('ds.deep_caching_type')->text(class => 'field', readonly => 'readonly', value => $ds->deep_caching_type);
-
 		<% } %>
 	</div>
 </div>

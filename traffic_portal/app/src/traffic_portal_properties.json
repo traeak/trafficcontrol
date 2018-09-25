@@ -320,7 +320,7 @@
           },
           "rangeRequestHandling": {
             "title": "Range Request Handling",
-            "desc": "How to treat range requests.<br><br><ul><li>0: Do not cache (ranges requested from files that are already cached due to a non range request will be a HIT)</li><li>1: Use the <a href=\"https://docs.trafficserver.apache.org/en/latest/admin-guide/plugins/background_fetch.en.html\" target=\"_blank\">background_fetch plugin.</a></li><li>2: Use the cache_range_requests plugin.</li></ul>"
+            "desc": "How to treat range requests.<br><br><ul><li>0: Do not cache (ranges requested from files that are already cached due to a non range request will be a HIT)</li><li>1: Use the <a href=\"https://docs.trafficserver.apache.org/en/latest/admin-guide/plugins/background_fetch.en.html\" target=\"_blank\">background_fetch plugin.</a></li><li>2: Use the cache_range_requests plugin.</li><li>3: Use the slice plugin.</li></ul>"
           },
           "regexRemap": {
             "title": "Regex remap expression",
@@ -342,6 +342,10 @@
             "title": "Signing Algorithm",
             "desc": "Type of URL signing method to sign the URLs:<br><ul><li>null: token based auth is not enabled for this delivery service.</li><li>“url_sig”: URL Sign token based auth is enabled for this delivery service.</li><li>“uri_signing”: URI Signing token based auth is enabled for this delivery service.</li></ul><br><br><a href=\"http://traffic-control-cdn.readthedocs.io/en/latest/admin/traffic_ops/using.html#rl-signed-urls\" target=\"_blank\">See Token Based Authentication</a>"
           },
+          "sliceBlockBytes": {
+            "title": "Slice Block Bytes",
+            "desc": "Size in bytes to use for the slice plugin, useful for range requests and large assets.  10M or 512k are valid entries, default is 1M."
+          }
           "tenantId": {
             "title": "Tenant",
             "desc": "Name of company or division of company who owns account. Allows you to group your services and control access. Tenants are setup as a simple hierarchy where you may create parent / child accounts."

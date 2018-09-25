@@ -52,10 +52,10 @@ sub define {
 	# Traffic Stats Extension for 1.2
 	$self->traffic_stats_routes( $r, $version );
 
-	# 1.3 Routes
-	$version = "1.3";
+	# 1.4 Routes
+	$version = "1.4";
 	$self->api_routes( $r, $version, $namespace );
-	# Traffic Stats Extension 1.3
+	# Traffic Stats Extension 1.4
 	$self->traffic_stats_routes( $r, $version );
 
 	$self->catch_all( $r, $namespace );
