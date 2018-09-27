@@ -214,6 +214,7 @@ requires 'Sub::Uplevel';
 requires 'Sys::Syslog';
 requires 'TAP::Formatter::Jenkins';
 requires 'Task::Weaken';
+requires 'Term::ReadKey';
 requires 'Term::ReadPassword';
 requires 'Test';
 requires 'Test::Builder::Tester';
