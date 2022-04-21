@@ -38,21 +38,10 @@ const LineCommentParentDotConfig = LineCommentHash
 
 const ParentConfigFileName = "parent.config"
 
+// deprecated
 const ParentConfigParamQStringHandling = "psel.qstring_handling"
-const ParentConfigParamMSOAlgorithm = "mso.algorithm"
-const ParentConfigParamMSOParentRetry = "mso.parent_retry"
-const ParentConfigParamMSOUnavailableServerRetryResponses = "mso.unavailable_server_retry_responses"
-const ParentConfigParamMSOMaxSimpleRetries = "mso.max_simple_retries"
-const ParentConfigParamMSOMaxUnavailableServerRetries = "mso.max_unavailable_server_retries"
-const ParentConfigParamMergeGroups = "merge_parent_groups"
-const ParentConfigParamAlgorithm = "algorithm"
-const ParentConfigParamQString = "qstring"
-const ParentConfigParamSecondaryMode = "try_all_primaries_before_secondary"
 
-const ParentConfigParamParentRetry = "parent_retry"
-const ParentConfigParamUnavailableServerRetryResponses = "unavailable_server_retry_responses"
-const ParentConfigParamMaxSimpleRetries = "max_simple_retries"
-const ParentConfigParamMaxUnavailableServerRetries = "max_unavailable_server_retries"
+const ParentConfigParamMergeGroups = "merge_parent_groups"
 
 const ParentConfigDSParamDefaultMSOAlgorithm = ParentAbstractionServiceRetryPolicyConsistentHash
 const ParentConfigDSParamDefaultMSOParentRetry = "both"
@@ -66,8 +55,55 @@ const ParentConfigCacheParamUseIP = "use_ip_address"
 const ParentConfigCacheParamRank = "rank"
 const ParentConfigCacheParamNotAParent = "not_a_parent"
 
+const ParentConfigParamAlgorithm = "algorithm"
+const ParentConfigParamQString = "qstring"
+const ParentConfigParamSecondaryMode = "try_all_primaries_before_secondary"
+
+const ParentConfigParamParentRetry = "parent_retry"
+const ParentConfigParamUnavailableServerRetryResponses = "unavailable_server_retry_responses"
+const ParentConfigParamMaxSimpleRetries = "max_simple_retries"
+const ParentConfigParamMaxUnavailableServerRetries = "max_unavailable_server_retries"
+
 type OriginHost string
 type OriginFQDN string
+
+type ParentConfigParamKeys struct {
+	Algorithm                       []string
+	QString                         []string
+	SecondaryMode                   []string
+	ParentRetry                     []string
+	UnavailableServerRetryResponses []string
+	MaxSimpleRetries                []string
+	MaxUnavailableServerRetries     []string
+}
+
+// mso. are deprecated, overwritten by non mso version
+func MakeParentConfigParamKeysLast() ParentConfigParamKeys {
+	return ParentConfigParamKeys{
+		Algorithm:                       []string{"mso." + ParentConfigParamAlgorithm, ParentConfigParamAlgorithm, "last." + ParentConfigParamAlgorithm},
+		QString:                         []string{"mso." + ParentConfigParamQString, ParentConfigParamQString, "last." + ParentConfigParamQString},
+		SecondaryMode:                   []string{"mso." + ParentConfigParamSecondaryMode, ParentConfigParamSecondaryMode, "last." + ParentConfigParamSecondaryMode},
+		ParentRetry:                     []string{"mso." + ParentConfigParamParentRetry, ParentConfigParamParentRetry, "last." + ParentConfigParamParentRetry},
+		UnavailableServerRetryResponses: []string{"mso." + ParentConfigParamUnavailableServerRetryResponses, ParentConfigParamUnavailableServerRetryResponses, "last." + ParentConfigParamUnavailableServerRetryResponses},
+		MaxSimpleRetries:                []string{"mso." + ParentConfigParamMaxSimpleRetries, ParentConfigParamMaxSimpleRetries, "last." + ParentConfigParamMaxSimpleRetries},
+		MaxUnavailableServerRetries:     []string{"mso." + ParentConfigParamMaxUnavailableServerRetries, ParentConfigParamMaxUnavailableServerRetries, "last." + ParentConfigParamMaxUnavailableServerRetries},
+	}
+}
+
+func MakeParentConfigParamKeysInner() ParentConfigParamKeys {
+	return ParentConfigParamKeys{
+		Algorithm:                       []string{"inner." + ParentConfigParamAlgorithm},
+		QString:                         []string{ParentConfigParamQString, "inner." + ParentConfigParamQString},
+		SecondaryMode:                   []string{"inner." + ParentConfigParamSecondaryMode},
+		ParentRetry:                     []string{"inner." + ParentConfigParamParentRetry},
+		UnavailableServerRetryResponses: []string{"inner." + ParentConfigParamUnavailableServerRetryResponses},
+		MaxSimpleRetries:                []string{"inner." + ParentConfigParamMaxSimpleRetries},
+		MaxUnavailableServerRetries:     []string{"inner." + ParentConfigParamMaxUnavailableServerRetries},
+	}
+}
+
+var ParentConfigParamsKeyInner = MakeParentConfigParamKeysInner()
+var ParentConfigParamsKeyLast = MakeParentConfigParamKeysLast()
 
 // ParentConfigOpts contains settings to configure parent.config generation options.
 type ParentConfigOpts struct {
@@ -326,9 +362,16 @@ func makeParentDotConfigData(
 			continue
 		}
 
+		var pcParamKeys ParentConfigParamKeys
+		if cacheIsTopLevel {
+			pcParamKeys = ParentConfigParamsKeyLast
+		} else {
+			pcParamKeys = ParentConfigParamsKeyInner
+		}
+
 		// Note these Parameters are only used for MSO for legacy DeliveryServiceServers DeliveryServices (except QueryStringHandling which is used by all DeliveryServices).
 		//      Topology DSes use them for all DSes, MSO and non-MSO.
-		dsParams, dsParamsWarnings := getParentDSParams(ds, profileParentConfigParams)
+		dsParams, dsParamsWarnings := getParentDSParams(ds, profileParentConfigParams, pcParamKeys)
 		warnings = append(warnings, dsParamsWarnings...)
 
 		// TODO put these in separate functions. No if-statement should be this long.
@@ -382,6 +425,7 @@ func makeParentDotConfigData(
 			if ds.OriginShield != nil && *ds.OriginShield != "" {
 
 				policy := ParentAbstractionServiceRetryPolicyConsistentHash
+
 				if parentSelectAlg := serverParams[ParentConfigParamAlgorithm]; strings.TrimSpace(parentSelectAlg) != "" {
 					paramPolicy := ParentSelectAlgorithmToParentAbstractionServiceRetryPolicy(parentSelectAlg)
 					if paramPolicy != ParentAbstractionServiceRetryPolicyInvalid {
@@ -817,11 +861,24 @@ type parentDSParams struct {
 	MergeGroups                     []string
 }
 
+// Last key in array wins
+func bestParamFor(dsParams map[string]string, keys []string) (key string, value string, okay bool) {
+	okay = false
+	for _, k := range keys {
+		if v, ok := dsParams[k]; ok {
+			key = k
+			value = v
+			okay = true
+		}
+	}
+	return
+}
+
 // getDSParams returns the Delivery Service Profile Parameters used in parent.config, and any warnings.
 // If Parameters don't exist, defaults are returned. Non-MSO Delivery Services default to no custom retry logic (we should reevaluate that).
 // Note these Parameters are only used for MSO for legacy DeliveryServiceServers DeliveryServices.
 //      Topology DSes use them for all DSes, MSO and non-MSO.
-func getParentDSParams(ds DeliveryService, profileParentConfigParams map[string]map[string]string) (parentDSParams, []string) {
+func getParentDSParams(ds DeliveryService, profileParentConfigParams map[string]map[string]string, pcParamKeys ParentConfigParamKeys) (parentDSParams, []string) {
 	warnings := []string{}
 	params := parentDSParams{}
 	isMSO := ds.MultiSiteOrigin != nil && *ds.MultiSiteOrigin
@@ -844,62 +901,38 @@ func getParentDSParams(ds DeliveryService, profileParentConfigParams map[string]
 	params.QueryStringHandling = dsParams[ParentConfigParamQStringHandling]
 	params.MergeGroups = strings.Split(dsParams[ParentConfigParamMergeGroups], " ")
 
+	//		if v, ok := dsParams[ParentConfigParamMSOAlgorithm]; ok && strings.TrimSpace(v) != "" {
 	// TODO deprecate & remove "mso." Parameters - there was never a reason to restrict these settings to MSO.
-	if isMSO {
-		if v, ok := dsParams[ParentConfigParamMSOAlgorithm]; ok && strings.TrimSpace(v) != "" {
-			policy := ParentSelectAlgorithmToParentAbstractionServiceRetryPolicy(v)
-			if policy != ParentAbstractionServiceRetryPolicyInvalid {
-				params.Algorithm = policy
-			} else {
-				warnings = append(warnings, "DS '"+*ds.XMLID+"' had malformed "+ParentConfigParamMSOAlgorithm+" parameter '"+v+"', not using!")
-			}
-		}
-		if v, ok := dsParams[ParentConfigParamMSOParentRetry]; ok {
-			params.ParentRetry = v
-		}
-		if v, ok := dsParams[ParentConfigParamMSOUnavailableServerRetryResponses]; ok {
-			if v != "" && !unavailableServerRetryResponsesValid(v) {
-				warnings = append(warnings, "DS '"+*ds.XMLID+"' had malformed "+ParentConfigParamMSOUnavailableServerRetryResponses+" parameter '"+v+"', not using!")
-			} else if v != "" {
-				params.UnavailableServerRetryResponses = v
-			}
-		}
-		if v, ok := dsParams[ParentConfigParamMSOMaxSimpleRetries]; ok {
-			params.MaxSimpleRetries = v
-		}
-		if v, ok := dsParams[ParentConfigParamMSOMaxUnavailableServerRetries]; ok {
-			params.MaxUnavailableServerRetries = v
-		}
-	}
-
-	// Even if the DS is MSO, non-"mso." Parameters override "mso." ones, because they're newer.
-	if v, ok := dsParams[ParentConfigParamAlgorithm]; ok && strings.TrimSpace(v) != "" {
+	//	if isMSO {
+	if k, v, ok := bestParamFor(dsParams, pcParamKeys.Algorithm); ok && strings.TrimSpace(v) != "" {
 		policy := ParentSelectAlgorithmToParentAbstractionServiceRetryPolicy(v)
 		if policy != ParentAbstractionServiceRetryPolicyInvalid {
 			params.Algorithm = policy
 		} else {
-			warnings = append(warnings, "DS '"+*ds.XMLID+"' had malformed "+ParentConfigParamAlgorithm+" parameter '"+v+"', not using!")
+			warnings = append(warnings, "DS '"+*ds.XMLID+"' had malformed "+k+" parameter '"+v+"', not using!")
 		}
 	}
-	if v, ok := dsParams[ParentConfigParamParentRetry]; ok {
+	if _, v, ok := bestParamFor(dsParams, pcParamKeys.ParentRetry); ok {
 		params.ParentRetry = v
 	}
-	if v, ok := dsParams[ParentConfigParamUnavailableServerRetryResponses]; ok {
+	if k, v, ok := bestParamFor(dsParams, pcParamKeys.UnavailableServerRetryResponses); ok {
 		if v != "" && !unavailableServerRetryResponsesValid(v) {
-			warnings = append(warnings, "DS '"+*ds.XMLID+"' had malformed "+ParentConfigParamUnavailableServerRetryResponses+" parameter '"+v+"', not using!")
+			warnings = append(warnings, "DS '"+*ds.XMLID+"' had malformed "+k+" parameter '"+v+"', not using!")
 		} else if v != "" {
 			params.UnavailableServerRetryResponses = v
 		}
 	}
-	if v, ok := dsParams[ParentConfigParamMaxSimpleRetries]; ok {
+	if _, v, ok := bestParamFor(dsParams, pcParamKeys.MaxSimpleRetries); ok {
 		params.MaxSimpleRetries = v
 	}
-	if v, ok := dsParams[ParentConfigParamMaxUnavailableServerRetries]; ok {
+	if _, v, ok := bestParamFor(dsParams, pcParamKeys.MaxUnavailableServerRetries); ok {
 		params.MaxUnavailableServerRetries = v
 	}
-	if v, ok := dsParams[ParentConfigParamSecondaryMode]; ok {
+	//	} // isMSO
+
+	if k, v, ok := bestParamFor(dsParams, pcParamKeys.SecondaryMode); ok {
 		if v != "" {
-			warnings = append(warnings, "DS '"+*ds.XMLID+"' had Parameter "+ParentConfigParamSecondaryMode+" which is used if it exists, the value is ignored! Non-empty value '"+v+"' will be ignored!")
+			warnings = append(warnings, "DS '"+*ds.XMLID+"' had Parameter "+k+" which is used if it exists, the value is ignored! Non-empty value '"+v+"' will be ignored!")
 		}
 		params.TryAllPrimariesBeforeSecondary = true
 	}
